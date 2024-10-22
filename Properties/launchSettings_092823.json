@@ -1,0 +1,32 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": true,
+    "anonymousAuthentication": false,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:28969",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_CM_VIEW": "SIGW\\IIS-CM-VIEW",
+        "ASPNETCORE_CM_SHIPPINGCOMMENTS": "SIGW\\IIS-CM-SHIPPINGCOMMENTS",
+        "ASPNETCORE_CM_ADMIN": "SIGW\\IIS-CM-ADMIN",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_SQLSERVER": "SQL1\\Inquiry",
+        "ASPNETCORE_PLATFORM_COLOR": "red"
+      }
+    },
+    "CustomerMaster": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5000"
+    }
+  }
+}

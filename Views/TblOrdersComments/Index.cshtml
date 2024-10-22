@@ -1,0 +1,651 @@
+﻿@model PaginatedList<CustomerMaster.ViewModels.VwOrdersComments>
+@using Microsoft.AspNetCore.Authorization;
+@inject IAuthorizationService AuthorizationService
+
+@{
+    ViewData["Title"] = "Shipping Comments";
+    string companyIdFilter = string.Empty;
+    string acctNumberFilter = string.Empty;
+    string tblDbCustomersShipToIdFilter = String.Empty;
+
+    bool blnCanEditShippingComments = false;
+    if ((await AuthorizationService.AuthorizeAsync(User, "RequireCMShippingCommentsRole")).Succeeded)
+    {
+        blnCanEditShippingComments = true;
+    }
+}
+
+<h1>Shipping Comments</h1>
+
+<form asp-controller="TblOrdersComments" asp-action="Index" method="get">
+    <div class="form-group form-group-sm no-gutters border">
+        <div class="row no-gutters bg-info">
+            <div class="col-sm-2">
+                <span class="font-weight-bold text-white">Search Options:</span>
+                <br />
+                <button type="submit" value="Search" class="btn btn-primary" title="Search">
+                    Search
+                </button>
+                <br />
+                <a asp-action="Index" class="btn btn-secondary" title="Back to Full List">Back to Full List</a>
+            </div>
+            <div class="col-sm-10">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label class="control-label font-weight-bold float-right text-white">Company:</label>
+                    </div>
+                    <div class="col-sm-3">
+                        @{
+                            var book = (SelectList)ViewData["CompanyIdDropDown"];
+                            List<SelectListItem> book1 = new List<SelectListItem>();
+                            book1.Add(new SelectListItem() { Text = "* ALL *", Value = "" });
+
+                            if (ViewData["CompanyIdFilter"] != null)
+                            {
+                                companyIdFilter = ViewData["CompanyIdFilter"].ToString();
+                            }
+                            foreach (SelectListItem a in book)
+                            {
+                                if (a.Value == companyIdFilter)
+                                {
+                                    a.Selected = true;
+                                }
+                                book1.Add(a);
+                            }
+                        }
+                        <select class="form-control" asp-items="@book1" name="CompanyIdSearch"
+                                id="CompanyIdFilter"></select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="control-label font-weight-bold float-right text-white">Cust Name contains:</label>
+                    </div>
+                    <div class="col-sm-4">
+                        <input class="form-control" name="CustNameContainsSearch"
+                               value="@ViewData["CustNameContainsFilter"]" id="CustNameContainsFilter" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label class="control-label font-weight-bold float-right text-white">Acct#:</label>
+                    </div>
+                    <div class="col-sm-10">
+                        @{
+                            var acct = (SelectList)ViewData["AcctNumberDropDown"];
+                            List<SelectListItem> acct1 = new List<SelectListItem>();
+                            acct1.Add(new SelectListItem() { Text = "* ALL *", Value = "" });
+
+                            if (ViewData["AcctNumberFilter"] != null)
+                            {
+                                acctNumberFilter = ViewData["AcctNumberFilter"].ToString();
+                            }
+                            foreach (SelectListItem a in acct)
+                            {
+                                if (a.Value == acctNumberFilter)
+                                {
+                                    a.Selected = true;
+                                }
+                                acct1.Add(a);
+                            }
+                        }
+                        <select class="form-control" asp-items="@acct1" name="AcctNumberSearch"
+                                id="AcctNumberFilter"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label class="control-label font-weight-bold float-right text-white">Ship Name:</label>
+                    </div>
+                    <div class="col-sm-10">
+                        @{
+                            var shipName = (SelectList)ViewData["TblDbCustomersShipToDropDown"];
+                            List<SelectListItem> shipName1 = new List<SelectListItem>();
+                            shipName1.Add(new SelectListItem() { Text = "* ALL *", Value = "" });
+
+                            if (ViewData["TblDbCustomersShipToIdFilter"] != null)
+                            {
+                                tblDbCustomersShipToIdFilter = ViewData["TblDbCustomersShipToIdFilter"].ToString();
+                            }
+                            foreach (SelectListItem a in shipName)
+                            {
+                                if (a.Value == tblDbCustomersShipToIdFilter)
+                                {
+                                    a.Selected = true;
+                                }
+                                shipName1.Add(a);
+                            }
+                        }
+                        <select class="form-control" asp-items="@shipName1" name="TblDbCustomersShipToIdSearch"
+                                id="TblDbCustomersShipToIdFilter"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@{
+    int newI = 0;
+    foreach (var item in Model)
+    {
+        string myShipToId = item.TblDbCustomersShipToId.ToString();
+        var myFormId = "myForm" + myShipToId;
+        var myCommentId = "Comment" + myShipToId;
+        var myButtonId = "myBtn" + myShipToId;
+        var myId = item.Id.ToString();
+        var myIdId = "Id" + myShipToId;
+        <div class="row">
+            <div class="col-sm-6 bg-white">
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Acct #:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.AcctNumber)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Cust Alpha:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.BillCustAlpha)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Customer Name:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.BillCustName)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Bill Address:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.CustBillAddress)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Secondary Bill Field:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.CustBillAddr2)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Bill City:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.CustBillCity)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Bill State:</span>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.CustBillState)
+                    </div>
+                    <div class="col-sm-3 text-right">
+                        <span class="font-weight-bold">Zip Code:</span>
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.DisplayFor(modelItem => item.CustBillZipCode)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Active:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.CustBillActive)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Contact:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.CustBillContact)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Plant:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.CustBillPlant)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Phone #:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.CustBillPhone)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Fax #:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.CustBillFax)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Inside Rep:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.BillInsideRep)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Outside Rep:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.BillOutsideRep)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Terms:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.BillCustomerTerms)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Allowed Over Run Percentage:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.BillAllowedOverRunPercentage)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Bill To Email Address List:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.BillToEmailAddress)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Master Acct #:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.BillMasterAcctNumber)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-right">
+                        <span class="font-weight-bold">Updated by:</span>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DisplayFor(modelItem => item.BillUpdatedUser) at @Html.DisplayFor(modelItem => item.BillUpdatedDateTime)
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 bg-light">
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Ship To Same as Bill To:</span>
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.DisplayFor(modelItem => item.ShipToSameAsBillTo)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Ship To #:</span>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.CustId)
+                    </div>
+                    <div class="col-sm-1 bg-danger text-right">
+                        @Html.DisplayFor(modelItem => item.TblDbCustomersShipToId)
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.ShipCustActive)
+                        <span class="font-weight-bold">Active</span>
+                    </div>
+                    <div class="col-sm-1 bg-danger text-right">
+                        @Html.DisplayFor(modelItem => item.CompanyId)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Ship To Cust Alpha:</span>
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.DisplayFor(modelItem => item.ShipCustAlpha)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Ship To Name:</span>
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.DisplayFor(modelItem => item.CustShipName)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Ship Address:</span>
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.DisplayFor(modelItem => item.CustShipAddress)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Secondary Ship Field:</span>
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.DisplayFor(modelItem => item.CustShipAddr2)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Ship City:</span>
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.DisplayFor(modelItem => item.CustShipCity)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Ship State:</span>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.CustShipState)
+                    </div>
+                    <div class="col-sm-3 text-right">
+                        <span class="font-weight-bold">Zip Code:</span>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.CustShipZipCode)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Contact:</span>
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.DisplayFor(modelItem => item.CustShipContact)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Plant:</span>
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.DisplayFor(modelItem => item.CustShipPlant)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Phone #:</span>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.CustShipPhone)
+                    </div>
+                    <div class="col-sm-3 text-right">
+                        <span class="font-weight-bold">Fax #:</span>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.CustShipPhone)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Inside Rep:</span>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.ShipInsideRep)
+                    </div>
+                    <div class="col-sm-3 text-right">
+                        <span class="font-weight-bold">O/S Rep:</span>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.ShipOutsideRep)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card">
+                        <div class="card-title font-weight-bold border-bottom text-primary">
+                            CUSTOMER COMMENTS
+                        </div>
+                        <div class="card-text">
+                            @*<form method="post" style="display:inline;" id="@myFormId" asp-action="CustomerComments">*@
+                            <form method="post" style="display:inline;" id="@myFormId">
+                                <input type="hidden" id="companyIdFilter" class="form-control" name="companyIdFilter"
+                                       value="@companyIdFilter" />
+                                <input type="hidden" id="acctNumberFilter" class="form-control" name="acctNumberFilter"
+                                       value="@acctNumberFilter" />
+                                <input type="hidden" id="tblDbCustomersShipToIdFilter" class="form-control" name="tblDbCustomersShipToIdFilter"
+                                       value="@tblDbCustomersShipToIdFilter" />
+                                <input type="hidden" id="pageNumber" class="form-control" name="pageNumber"
+                                       value="@Model.PageIndex" />
+                                <input type="hidden" id="@myIdId" class="form-control" name="myId"
+                                       value="@myId" />
+                                <input type="hidden" id="myShipToId" class="form-control" name="myShipToId"
+                                       value="@myShipToId" />
+                                <textarea name="Comment" value="@item.Comment" id="@myCommentId" rows="5" cols="50">@item.Comment</textarea>
+                                @{
+                                    if (blnCanEditShippingComments)
+                                    { 
+                                        <button type="submit" class="btn btn-primary btn-sm myBtn" id="@myButtonId"
+                                                title="Update" name="Update">
+                                            Update
+                                        </button>
+                                    }
+                                }
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5 text-right">
+                        <span class="font-weight-bold">Updated by:</span>
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.DisplayFor(modelItem => item.ShipUpdatedUser) at @Html.DisplayFor(modelItem => item.ShipUpdatedDateTime)
+                    </div>
+                </div>
+            </div>
+        </div>
+        newI++;
+    }
+}
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-companyIdFilter="@ViewData["CompanyIdFilter"]"
+   asp-route-acctNumberFilter="@ViewData["AcctNumberFilter"]"
+   asp-route-tblDbCustomersShipToIdFilter="@ViewData["TblDbCustomersShipToIdFilter"]"
+   asp-route-custNameContainsFilter="@ViewData["CustNameContainsFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-companyIdFilter="@ViewData["CompanyIdFilter"]"
+   asp-route-acctNumberFilter="@ViewData["AcctNumberFilter"]"
+   asp-route-tblDbCustomersShipToIdFilter="@ViewData["TblDbCustomersShipToIdFilter"]"
+   asp-route-custNameContainsFilter="@ViewData["CustNameContainsFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+@section Scripts {
+    <script>
+        $(document).ready(
+            function () {
+                $(".myBtn").click(
+                    function (a) {
+                        a.preventDefault();
+
+                        var myButtonId = $(this).attr("id");
+                        var shipToIdStr = myButtonId.substr(5);
+                        var shipToId = parseInt(shipToIdStr);
+
+                        var myCommentId = "Comment" + shipToId;
+                        var comment = $("#" + myCommentId).val();
+
+                        var myIdId = "Id" + shipToId;
+                        var idStr = $("#" + myIdId).val();
+                        var id = parseInt(idStr);
+                        $.ajax(
+                            {
+                                type: "POST",
+                                url: "@Url.Action("CommentUpdate", "TblOrdersComments")",
+                                data: { shipToId: shipToId, comment: comment, id: id}
+                            }
+                        )
+                        .done(
+                            function (data)
+                            {
+                                var newId = data.newId;
+                                $("#" + myIdId).val(newId);
+                                alert("Update succeeded");
+                            }
+                        )
+                        .error(
+                            function () {
+                                alert("Update failed");
+                            }
+                        );
+                    }
+                );
+
+
+                $("#CompanyIdFilter").change(function () {
+                    var selected = $(this).val();
+                    var acctNumSelectedBefore = $("#AcctNumberFilter").val();
+                    $.ajax(
+                        {
+                            //url: '/Home/Index',
+                            url: "@Url.Action("IndexCustBillVM")",
+                            data: { id: $("#CompanyIdFilter option:selected").val() },
+                            type: "get",
+                            cache: false,
+                            dataType: "json",
+                            contentType: "application/json;charset=utf-8"
+                        }
+                    )
+                    .done(
+                        function (data) {
+                            var modelDropDown = $("#AcctNumberFilter");
+                            modelDropDown.empty();
+
+                            modelDropDown.append(
+                                $("<option>", { value: "" }).text("* ALL *")
+                            );
+                            $.each(
+                                data,
+                                function (i, item) {
+                                    modelDropDown.append(
+                                        $("<option>", { value: item.value}).text(item.text)
+                                    );
+                                }
+                            );
+
+                            //  alert("Populated Acct number dropdown");
+                            var thevalue = acctNumSelectedBefore;
+                            //  alert("thevalue = " + thevalue);
+                            var exists = false;
+                            if (thevalue != "") {
+                                exists = (0 != $('#AcctNumberFilter option[value=' + thevalue + ']').length);
+                            }
+                            //  alert("exists = " + exists);
+                            if (exists == true) {
+                                $("#AcctNumberFilter").val(acctNumSelectedBefore);
+                            }
+
+                            var selected = "";
+                            if (exists == true) { selected = $("#AcctNumberFilter").val();}
+
+                            //  alert("selected = " + selected);
+                            DoAcctNumberFilterChange(selected);
+                        }
+                    )
+                    .fail(function (error) {
+                        alert("Fail");
+                    });
+                });
+
+
+                $("#AcctNumberFilter").change(
+                    function () {
+                        var selected = $(this).val();
+                        DoAcctNumberFilterChange(selected);
+                    }
+                );
+            }
+        );
+
+        function DoAcctNumberFilterChange(acctNum) {
+            var shipIdSelectedBefore = $("#TblDbCustomersShipToIdFilter").val();
+            //  alert("shipIdSelectedBefore = " + shipIdSelectedBefore);
+            //  alert("in DoAcctNumberFilterChange");
+            $.ajax(
+                {
+                    url: "@Url.Action("IndexCustShipVM")",
+                    data: { id: $("#CompanyIdFilter option:selected").val(), acctNum: acctNum },
+                    type: "get",
+                    cache: false,
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8"
+                }
+            )
+            .done(
+                function (data) {
+                    var modelDropDown = $("#TblDbCustomersShipToIdFilter");
+                    modelDropDown.empty();
+
+                    modelDropDown.append(
+                        $("<option>", { value: "" }).text("* ALL *")
+                    );
+                    $.each(
+                        data,
+                        function (i, item) {
+                            modelDropDown.append(
+                                $("<option>", { value: item.id}).text(item.custShipName)
+                            );
+                        }
+                    );
+
+                    var thevalue = shipIdSelectedBefore;
+                    var exists = (0 != $('#TblDbCustomersShipToIdFilter option[value=' + thevalue + ']').length);
+                    if (exists == true) {
+                        $("#TblDbCustomersShipToIdFilter").val(shipIdSelectedBefore);
+                    }
+                    else {
+                        $("#TblDbCustomersShipToIdFilter").val("");
+                    }
+                }
+            )
+            .fail(
+                function (error) {
+                    alert("Fail");
+                }
+            );
+        }
+    </script>
+}
+

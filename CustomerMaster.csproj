@@ -1,0 +1,144 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\OldVersions\**" />
+    <Compile Remove="Data\OldVersions\**" />
+    <Compile Remove="Models\OldVersions\**" />
+    <Compile Remove="OldVersions\**" />
+    <Compile Remove="ViewModels\OldVersions\**" />
+    <Compile Remove="Views\Home\OldVersions\**" />
+    <Compile Remove="Views\Shared\OldVersions\**" />
+    <Compile Remove="Views\TblOrdersComments\OldVersions\**" />
+    <Content Remove="Controllers\OldVersions\**" />
+    <Content Remove="Data\OldVersions\**" />
+    <Content Remove="Models\OldVersions\**" />
+    <Content Remove="OldVersions\**" />
+    <Content Remove="ViewModels\OldVersions\**" />
+    <Content Remove="Views\Home\OldVersions\**" />
+    <Content Remove="Views\Shared\OldVersions\**" />
+    <Content Remove="Views\TblOrdersComments\OldVersions\**" />
+    <EmbeddedResource Remove="Controllers\OldVersions\**" />
+    <EmbeddedResource Remove="Data\OldVersions\**" />
+    <EmbeddedResource Remove="Models\OldVersions\**" />
+    <EmbeddedResource Remove="OldVersions\**" />
+    <EmbeddedResource Remove="ViewModels\OldVersions\**" />
+    <EmbeddedResource Remove="Views\Home\OldVersions\**" />
+    <EmbeddedResource Remove="Views\Shared\OldVersions\**" />
+    <EmbeddedResource Remove="Views\TblOrdersComments\OldVersions\**" />
+    <None Remove="Controllers\OldVersions\**" />
+    <None Remove="Data\OldVersions\**" />
+    <None Remove="Models\OldVersions\**" />
+    <None Remove="OldVersions\**" />
+    <None Remove="ViewModels\OldVersions\**" />
+    <None Remove="Views\Home\OldVersions\**" />
+    <None Remove="Views\Shared\OldVersions\**" />
+    <None Remove="Views\TblOrdersComments\OldVersions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\TblOrdersCommentsController_110520.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_110520_1.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_110520_2.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_110520_3.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_110520_4.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_110620.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111020.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111020_1.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111020_2.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111020_3.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111120.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111120_1.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111120_2.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111120_3.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111120_4.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111120_5.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111220.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111320.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111320_1.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111320_2.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111320_3.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111320_4.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111620.cs" />
+    <Compile Remove="Controllers\TblOrdersCommentsController_111620_1.cs" />
+    <Compile Remove="Data\CustomerMasterContext_110520.cs" />
+    <Compile Remove="Data\CustomerMasterContext_110520_1.cs" />
+    <Compile Remove="Data\CustomerMasterContext_111020.cs" />
+    <Compile Remove="Data\CustomerMasterContext_111120.cs" />
+    <Compile Remove="Data\CustomerMasterContext_111320.cs" />
+    <Compile Remove="MinimumAgeRequirement.cs" />
+    <Compile Remove="Models\TblDbCustomers_111020.cs" />
+    <Compile Remove="Models\TblDbCustomers_111020_1.cs" />
+    <Compile Remove="Models\TblDbCustomers_111020_2.cs" />
+    <Compile Remove="Models\TblOrdersComments_110520.cs" />
+    <Compile Remove="Models\TblOrdersComments_110520_1.cs" />
+    <Compile Remove="Models\TblOrdersInsideRep_111113.cs" />
+    <Compile Remove="Models\TblOrdersInsideRep_111320.cs" />
+    <Compile Remove="Models\TblOrdersOutsideRep_111320.cs" />
+    <Compile Remove="Models\TblSysCompany_110420.cs" />
+    <Compile Remove="Startup_092823.cs" />
+    <Compile Remove="Startup_110520.cs" />
+    <Compile Remove="Startup_111620.cs" />
+    <Compile Remove="ViewModels\VwOrdersComments_111120.cs" />
+    <Compile Remove="ViewModels\VwOrdersComments_111120_1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="appsettings_092823.Development.json" />
+    <Content Remove="appsettings_110520.Development.json" />
+    <Content Remove="appsettings_110520.json" />
+    <Content Remove="Properties\launchSettings_092823.json" />
+    <Content Remove="Views\Home\Index_111620.cshtml" />
+    <Content Remove="Views\Shared\_Layout_041223.cshtml" />
+    <Content Remove="Views\Shared\_Layout_110520.cshtml" />
+    <Content Remove="Views\Shared\_Layout_110520_1.cshtml" />
+    <Content Remove="Views\Shared\_Layout_110520_2.cshtml" />
+    <Content Remove="Views\Shared\_Layout_110520_3.cshtml" />
+    <Content Remove="Views\Shared\_Layout_111620.cshtml" />
+    <Content Remove="Views\Shared\_Layout_111720.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_110520.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_110520_1.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_110520_2.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_110520_3A.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_110520_4.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_110520_5.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_110620.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_110620_1.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111020.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111020_1.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111020_2.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111020_3.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111020_4.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111020_5.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111120.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111120_1.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111120_2.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111120_3.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111120_4.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111120_5.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111220.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111220_1.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111220_2.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111320.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111320_1.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111620.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111620_1.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111620_2.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111620_3.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111620_4.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111620_5.cshtml" />
+    <Content Remove="Views\TblOrdersComments\Index_111620_6.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+  </ItemGroup>
+
+</Project>

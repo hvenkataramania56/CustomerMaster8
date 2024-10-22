@@ -1,0 +1,74 @@
+﻿@model CustomerMaster.Models.TblOrdersComments
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>TblOrdersComments</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Comment" class="control-label"></label>
+                <input asp-for="Comment" class="form-control" />
+                <span asp-validation-for="Comment" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedDate" class="control-label"></label>
+                <input asp-for="CreatedDate" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyId" class="control-label"></label>
+                <input asp-for="CompanyId" class="form-control" />
+                <span asp-validation-for="CompanyId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedUser" class="control-label"></label>
+                <input asp-for="CreatedUser" class="form-control" />
+                <span asp-validation-for="CreatedUser" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedWorkStation" class="control-label"></label>
+                <input asp-for="CreatedWorkStation" class="form-control" />
+                <span asp-validation-for="CreatedWorkStation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AcctNumber" class="control-label"></label>
+                <input asp-for="AcctNumber" class="form-control" />
+                <span asp-validation-for="AcctNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustId" class="control-label"></label>
+                <input asp-for="CustId" class="form-control" />
+                <span asp-validation-for="CustId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UpdatedUser" class="control-label"></label>
+                <input asp-for="UpdatedUser" class="form-control" />
+                <span asp-validation-for="UpdatedUser" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UpdatedDateTime" class="control-label"></label>
+                <input asp-for="UpdatedDateTime" class="form-control" />
+                <span asp-validation-for="UpdatedDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
