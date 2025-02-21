@@ -515,7 +515,7 @@ namespace CustomerMaster.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Policy = "RequireCMShippingCommentsRole")]
+        [Authorize(Policy = "RequireCMShippingCommentsRole")]
         public IActionResult CommentUpdate(int shipToId, string comment, int id)
         {
             TblOrdersComments temp = _context.TblOrdersComments.FirstOrDefault(e => e.Id == id);
