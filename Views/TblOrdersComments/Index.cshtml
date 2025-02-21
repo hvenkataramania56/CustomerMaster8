@@ -8,7 +8,7 @@
     string acctNumberFilter = string.Empty;
     string tblDbCustomersShipToIdFilter = String.Empty;
 
-    bool blnCanEditShippingComments = false;
+    bool blnCanEditShippingComments = true;  //Change it back to false after testing
     if ((await AuthorizationService.AuthorizeAsync(User, "RequireCMShippingCommentsRole")).Succeeded)
     {
         blnCanEditShippingComments = true;

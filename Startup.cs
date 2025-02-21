@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using CustomerMaster.Models;
-
-using Microsoft.AspNetCore.Server.IISIntegration;
 
 namespace CustomerMaster
 {
@@ -24,52 +17,23 @@ namespace CustomerMaster
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
+            services.AddControllersWithViews();
+            // services.AddRazorPages(); // Uncomment if you are using Razor Pages
+            // Add other services here (e.g., DbContext, etc.)
 
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
+            // Register CustomerMasterContext for Dependency Injection
             services.AddDbContext<CustomerMasterContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("CustomerMasterContext")));
-
-            services.AddAuthentication(IISDefaults.AuthenticationScheme);
-
-            string myGrpAdmin = Environment.GetEnvironmentVariable("ASPNETCORE_CM_ADMIN");
+                   options.UseSqlServer(Configuration.GetConnectionString("OutsideSvcPOsContext")));
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("RequireCMAdminRole", policy => policy.RequireRole(myGrpAdmin));
-            });
-
-            string myGrpShippingComments = Environment.GetEnvironmentVariable("ASPNETCORE_CM_SHIPPINGCOMMENTS");
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(
-                    "RequireCMShippingCommentsRole",
-                    policy => policy.RequireRole(myGrpShippingComments, myGrpAdmin));
-            });
-
-            string myGrpView = Environment.GetEnvironmentVariable("ASPNETCORE_CM_VIEW");
-            string[] roles = { myGrpView, myGrpAdmin, myGrpShippingComments };
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(
-                    "RequireCMViewRole",
-                    //policy => policy.RequireRole(myGrpView, myGrpAdmin, myGrpShippingComments)
-                    policy => policy.RequireRole(roles)
-                );
+                options.AddPolicy("RequireCMShippingCommentsRole", policy =>
+                      policy.RequireRole("CMShippingCommentsRole")); // Define the role requirement here
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -78,16 +42,22 @@ namespace CustomerMaster
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
-
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
+            app.UseRouting(); // **Endpoint Routing Middleware**
+
+            app.UseAuthorization(); // **Authorization Middleware (if needed)**
+
+            app.UseEndpoints(endpoints => // **Endpoint Routing Configuration**
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute( // Maps controller routes (for MVC controllers)
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                // endpoints.MapRazorPages(); // Uncomment if you are using Razor Pages
             });
         }
     }

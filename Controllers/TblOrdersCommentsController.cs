@@ -76,9 +76,9 @@ namespace CustomerMaster.Controllers
                         ship.Deleted == false && ship.CustShipName != null && ship.CustShipActive == -1
                     join cust in _context.TblDbCustomers
                         on
-                            new {ship.CompanyId, AcctNumber = (ship.AcctNumber ?? 0)}
+                            new { ship.CompanyId, AcctNumber = (ship.AcctNumber ?? 0) }
                             equals
-                            new {cust.CompanyId, cust.AcctNumber}
+                            new { cust.CompanyId, cust.AcctNumber }
                     where
                         cust.Deleted == false && cust.CustActive == -1
                         &&
@@ -168,8 +168,7 @@ namespace CustomerMaster.Controllers
                         ShipUpdatedUser = ship.UpdatedUser,
                         ShipUpdatedDateTime = ship.UpdatedDateTime
                     }
-                )
-            ;
+                );
             IQueryable<CustomerMaster.ViewModels.VwOrdersComments> fields =
                 someFieldCollection.Cast<CustomerMaster.ViewModels.VwOrdersComments>();
 
@@ -282,8 +281,7 @@ namespace CustomerMaster.Controllers
                         ShipUpdatedUser = ship.UpdatedUser,
                         ShipUpdatedDateTime = ship.UpdatedDateTime
                     }
-                )
-            ;
+                );
             IQueryable<CustomerMaster.ViewModels.VwOrdersComments> fields1 =
                 someFieldCollection1.Cast<CustomerMaster.ViewModels.VwOrdersComments>();
 
@@ -318,21 +316,7 @@ namespace CustomerMaster.Controllers
                 ;
             }
 
-            //switch (sortOrder)
-            //{
-            //    case "createdDate_desc":
-            //        comments = comments.OrderByDescending(s => s.CreatedDate);
-            //        break;
-            //    case "AcctNumber":
-            //        comments = comments.OrderBy(s => s.AcctNumber);
-            //        break;
-            //    case "acctNumber_desc":
-            //        comments = comments.OrderByDescending(s => s.AcctNumber);
-            //        break;
-            //    default:
-            //        comments = comments.OrderBy(s => s.CreatedDate);
-            //        break;
-            //}
+
             comments =
                 comments.OrderBy(s => s.CompanyId).ThenBy(s => s.AcctNumber).ThenBy(s => s.TblDbCustomersShipToId);
 
@@ -377,10 +361,24 @@ namespace CustomerMaster.Controllers
                 select new
                 {
                     d.AcctNumber,
-                    MyCustName = d.AcctNumber.ToString() + " - " + d.CustName + " - " + (d.CustBillCity ?? String.Empty) + ", " + (d.CustBillState ?? String.Empty) + " - " + comp.CompanyName
+                    d.CustName,
+                    d.CustBillCity,
+                    d.CustBillState,
+                    comp.CompanyName
                 };
-            //  var gageQuery = gageQuery1.OrderBy(m => m.AcctNumber);
-            var gageQuery = gageQuery1.GroupBy(x => new { x.AcctNumber, x.MyCustName }).Select(g => g.First()).OrderBy(m => m.AcctNumber);
+
+            var gageQuery = gageQuery1
+                .AsEnumerable() // Switch to client-side evaluation after initial data retrieval
+                .GroupBy(x => new { x.AcctNumber }) // Group by AcctNumber in memory
+                .Select(g => g.First()) // Select the first item from each group
+                .Select(x => new // Project into the desired format after grouping
+                {
+                    x.AcctNumber,
+                    MyCustName = $"{x.AcctNumber} - {x.CustName} - {(x.CustBillCity ?? String.Empty)}, {(x.CustBillState ?? String.Empty)} - {x.CompanyName}"
+                })
+                .OrderBy(m => m.AcctNumber)
+                .ToList(); // Finally, convert to a list for SelectList
+
             ViewData["AcctNumberDropDown"] = new SelectList(gageQuery, "AcctNumber", "MyCustName");
         }
 
@@ -407,15 +405,31 @@ namespace CustomerMaster.Controllers
                 select new
                 {
                     d.Id,
-                    CustShipName =
-                        d.CustShipName.Trim() + "(" + d.CustId.ToString() + ")" + " - " +
-                            (d.CustShipAddress ?? String.Empty) + " - " +
-                            (d.CustShipCity ?? String.Empty) + ", " + (d.CustShipState ?? String.Empty) + " - " +
-                            comp.CompanyName,
-                    d.CustShipState
+                    d.CustShipName,
+                    d.CustId,
+                    d.CustShipAddress,
+                    d.CustShipCity,
+                    d.CustShipState,
+                    comp.CompanyName
                 };
-            //  var gageQuery = gageQuery1.OrderBy(m => m.CustShipState).ThenBy(m => m.CustShipName);
-            var gageQuery = gageQuery1.GroupBy(x => x.Id).Select(g => g.First()).OrderBy(m => m.CustShipState).ThenBy(m => m.CustShipName);
+
+            var gageQuery = gageQuery1
+                .AsEnumerable() // Switch to client-side evaluation
+                .GroupBy(x => x.Id) // Group by Id in memory
+                .Select(g => g.First()) // Select the first item from each group
+                .Select(x => new  // Project into the desired format after grouping
+                {
+                    x.Id,
+                    CustShipName =
+                        $"{x.CustShipName?.Trim()}({x.CustId})" + " - " +
+                        $"{(x.CustShipAddress ?? String.Empty)} - " +
+                        $"{(x.CustShipCity ?? String.Empty)}, {(x.CustShipState ?? String.Empty)} - " +
+                        x.CompanyName,
+                    x.CustShipState
+                })
+                .OrderBy(m => m.CustShipState)
+                .ThenBy(m => m.CustShipName)
+                .ToList(); // Convert to list for SelectList
 
             ViewData["TblDbCustomersShipToDropDown"] =
                 new SelectList(gageQuery, "Id", "CustShipName");
@@ -441,15 +455,19 @@ namespace CustomerMaster.Controllers
                         comp => comp.CompanyId,
                         (cust, comp) =>
                             new {
-                                CompanyId = cust.CompanyId, Deleted = cust.Deleted,
-                                AcctNumber = cust.AcctNumber, CustName = cust.CustName,
-                                CompanyName = comp.CompanyName, CustActive = cust.CustActive,
-                                CustBillCity = (cust.CustBillCity ?? String.Empty), CustBillState = (cust.CustBillState ?? String.Empty)
+                                CompanyId = cust.CompanyId,
+                                Deleted = cust.Deleted,
+                                AcctNumber = cust.AcctNumber,
+                                CustName = cust.CustName,
+                                CompanyName = comp.CompanyName,
+                                CustActive = cust.CustActive,
+                                CustBillCity = (cust.CustBillCity ?? String.Empty),
+                                CustBillState = (cust.CustBillState ?? String.Empty)
                             }
                     )
                     .Where(
                         mdl =>
-                            ( (intId != 0 && mdl.CompanyId == intId) || (intId == 0))
+                            ((intId != 0 && mdl.CompanyId == intId) || (intId == 0))
                             &&
                             mdl.Deleted == false
                             &&
@@ -464,35 +482,40 @@ namespace CustomerMaster.Controllers
                          (cust, ship) =>
                             new
                             {
-                                cust.AcctNumber, cust.CustName, cust.CustBillCity,
-                                cust.CustBillState, cust.CompanyName,
-                                ship.CustShipActive, ship.CustShipName,
+                                cust.AcctNumber,
+                                cust.CustName,
+                                cust.CustBillCity,
+                                cust.CustBillState,
+                                cust.CompanyName,
+                                ship.CustShipActive,
+                                ship.CustShipName,
                                 ShipDeleted = ship.Deleted
                             }
-                    )
-                    .Where(
-                        ship => ship.ShipDeleted == false && ship.CustShipName != null
-                        &&
-                        ship.CustShipActive == -1
-                    )
-                    .Select(
-                        x =>
-                            new CustBillVM {
-                                Value = x.AcctNumber.ToString(),
-                                Text = x.AcctNumber.ToString() + " - " + x.CustName + " - " + x.CustBillCity + ", " + x.CustBillState + " - " + x.CompanyName,
-                                CompanyId = id
-                            }
-                    )
-                    .GroupBy(x => x.Text).Select(g => g.First())
-                    .OrderBy(m => int.Parse(m.Value))
-                    .ToList();
+                     )
+                     .Where(
+                         ship => ship.ShipDeleted == false && ship.CustShipName != null
+                         &&
+                         ship.CustShipActive == -1
+                     )
+                     .Select(
+                         x =>
+                             new CustBillVM
+                             {
+                                 Value = x.AcctNumber.ToString(),
+                                 Text = x.AcctNumber.ToString() + " - " + x.CustName + " - " + x.CustBillCity + ", " + x.CustBillState + " - " + x.CompanyName,
+                                 CompanyId = id
+                             }
+                     )
+                     .GroupBy(x => x.Text).Select(g => g.First())
+                     .OrderBy(m => int.Parse(m.Value))
+                     .ToList();
             //  return custBillVMCollection;
             //  return Json(new { CustBillVM = custBillVMCollection });
             return Json(custBillVMCollection);
         }
 
         [HttpPost]
-        [Authorize(Policy = "RequireCMShippingCommentsRole")]
+        //[Authorize(Policy = "RequireCMShippingCommentsRole")]
         public IActionResult CommentUpdate(int shipToId, string comment, int id)
         {
             TblOrdersComments temp = _context.TblOrdersComments.FirstOrDefault(e => e.Id == id);
@@ -539,7 +562,7 @@ namespace CustomerMaster.Controllers
             _context.TblOrdersCommentsAudit.Add(ca);
             _context.SaveChanges();
 
-            return Json(new { newId = newId});
+            return Json(new { newId = newId });
         }
 
         public JsonResult IndexCustShipVM(string id, string acctNum)
@@ -704,44 +727,19 @@ namespace CustomerMaster.Controllers
             _context.TblOrdersCommentsAudit.Add(ca);
             _context.SaveChanges();
 
-            //string path = "Index";
-            //return this.RedirectToPage(
-            //   path,
-            //   new
-            //   {
-            //       companyIdFilter = companyIdFilter1,
-            //       acctNumberFilter = acctNumberFilter1,
-            //       tblDbCustomersShipToIdFilter = tblDbCustomersShipToIdFilter1,
-            //       pageNumber = intPageNumber
-            //   }
-            //);
-            return RedirectToAction(
-                "Index",
-                "TblOrdersComments",
-                new
+
+            //  return RedirectToAction(nameof(Index),
+            return RedirectToAction("Index",
+                    new
                     {
+                        pageNumber = intPageNumber,
                         companyIdFilter = companyIdFilter1,
                         acctNumberFilter = acctNumberFilter1,
-                        tblDbCustomersShipToIdFilter = tblDbCustomersShipToIdFilter1,
-                        pageNumber = intPageNumber
+                        tblDbCustomersShipToIdFilter = tblDbCustomersShipToIdFilter1
                     }
-            );
-        }
-
-        // POST: TblOrdersComments/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Comment,CreatedDate,CompanyId,CreatedUser,CreatedWorkStation,AcctNumber,CustId,UpdatedUser,UpdatedDateTime")] TblOrdersComments tblOrdersComments)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tblOrdersComments);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tblOrdersComments);
+                );
+            //  return View("Index");
+            //  return View();
         }
 
         // GET: TblOrdersComments/Edit/5
@@ -761,8 +759,8 @@ namespace CustomerMaster.Controllers
         }
 
         // POST: TblOrdersComments/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Comment,CreatedDate,CompanyId,CreatedUser,CreatedWorkStation,AcctNumber,CustId,UpdatedUser,UpdatedDateTime")] TblOrdersComments tblOrdersComments)
